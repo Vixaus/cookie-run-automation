@@ -35,22 +35,20 @@ def capture_screen():
     return cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
 
 
-def match_template():
+def match_template(template_name):
     result = cv2.matchTemplate(
         capture_screen(),
-        next(iter(templates.values())),
+        templates[template_name],
         cv2.TM_CCOEFF_NORMED,
     )
 
     _, max_val, _, max_loc = cv2.minMaxLoc(result)
 
-    print(max_val)
-
     if max_val >= 0.9:
-        print("Matched Image")
+        return True
 
-    return
+    print(max_val)
+    return False
 
 
 load_templates()
-match_template()

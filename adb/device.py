@@ -1,6 +1,6 @@
 import subprocess
 
-from ..utils.adb_path import adb_path
+from utils.adb_path import adb_path
 
 online_devices = []
 
@@ -35,3 +35,5 @@ def open_cookie_run():
         ],
         check=True,
     )
+
+get_online_devices()
