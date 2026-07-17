@@ -1,4 +1,4 @@
-from opencv.template_match import match_template
+from opencv.template_match import match_template, match_color
 from adb.action import click_position
 import time
 
@@ -11,7 +11,12 @@ def select_boost(bot, state_enum):
         time.sleep(2)
         click_position((545, 570), (716, 609))
         time.sleep(2)
-        click_position((542, 562), (716, 609))
-        return
+
+        while match_color((78, 77, 75), (140, 330)):
+            print("waiting for power plus")
+            time.sleep(1)
+
+        print("power plus found")
+        return bot.update(state_enum.StartFromBoost)
     else:
         print("boost screen not found")

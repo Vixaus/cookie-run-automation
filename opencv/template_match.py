@@ -8,6 +8,9 @@ import cv2
 from adb.device import online_devices
 from utils.adb_path import adb_path
 
+type color = tuple[int, int, int]
+type vector = tuple[int, int]
+
 templates = {}
 
 
@@ -33,13 +36,14 @@ def capture_screen():
          f"Could not decode screenshot. ADB stderr: {result.stderr.decode(errors='replace')}"
         )
 
-   return cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+   return screen, cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
 
 
-def match_template(template_name):
+def match_template(img):
+    _, gray = capture_screen()
     result = cv2.matchTemplate(
-        capture_screen(),
-        templates[template_name],
+        gray,
+        templates[img],
         cv2.TM_CCOEFF_NORMED,
     )
 
@@ -48,8 +52,16 @@ def match_template(template_name):
     if max_val >= 0.9:
         return True
 
-    print(max_val)
     return False
 
+def match_color(rgb: color, positon: vector):
+    x, y = positon
+    ss, _ = capture_screen()
+    b, g, r = ss[y, x]
+
+    print(f"color: {r}, {g}, {b}")
+    if r == rgb[0] and g == rgb[1] and b == rgb[2]:
+        return True
+    return False
 
 load_templates()

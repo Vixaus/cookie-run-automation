@@ -1,20 +1,25 @@
 from dataclasses import dataclass
 from enum import Enum, auto
 
+from states.confirm_state_popup import confirm_popup
 from states.select_boost import select_boost
-from states.start_game import start_game
-
+from states.start_from_lobby import start_from_lobby
+from states.start_from_boost import start_from_boost
 
 class state_enum(Enum):
     Idle = auto()
-    StartGame = auto()
+    StartFromLobby = auto()
+    ConfirmPopup = auto()
     SelectBoost = auto()
+    StartFromBoost = auto()
 
 
 handler = {
-    state_enum.Idle: None,
-    state_enum.StartGame: start_game,
+    state_enum.Idle: lambda: None,
+    state_enum.StartFromLobby: start_from_lobby,
+    state_enum.ConfirmPopup: confirm_popup,
     state_enum.SelectBoost: select_boost,
+    state_enum.StartFromBoost: start_from_boost,
 }
 
 
@@ -25,6 +30,7 @@ class bot_state:
     def update(self, state):
         self.state = state
 
-        handler[state](self, state_enum)
+        if not state == state_enum.Idle:
+            handler[state](self, state_enum)
 
         return
