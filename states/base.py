@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum, auto
-from states.start_game import start_game
+
 from states.select_boost import select_boost
+from states.start_game import start_game
 
 
 class state_enum(Enum):
@@ -9,16 +10,13 @@ class state_enum(Enum):
     StartGame = auto()
     SelectBoost = auto()
 
-handler = [
-    {
-        "state": state_enum.StartGame,
-        "action": start_game
-    },
-    {
-        "state": state_enum.SelectBoost,
-        "action": select_boost
-    }
-]
+
+handler = {
+    state_enum.Idle: None,
+    state_enum.StartGame: start_game,
+    state_enum.SelectBoost: select_boost,
+}
+
 
 @dataclass
 class bot_state:
@@ -27,8 +25,6 @@ class bot_state:
     def update(self, state):
         self.state = state
 
-        for h in handler:
-            if h["state"] == state:
-                h["action"](self, state_enum)
-                break
+        handler[state](self, state_enum)
+
         return

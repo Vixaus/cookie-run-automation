@@ -5,6 +5,7 @@ import numpy as np
 
 import cv2
 
+from adb.device import online_devices
 from utils.adb_path import adb_path
 
 templates = {}
@@ -16,23 +17,23 @@ def load_templates():
 
 
 def capture_screen():
-    result = subprocess.run(
-        [adb_path, "exec-out", "screencap", "-p"],
-        capture_output=True,
-        check=True,
+   result = subprocess.run(
+       [adb_path, "-s", f"{online_devices[0]}", "exec-out", "screencap", "-p"],
+       capture_output=True,
+       check=True,
     )
 
-    screen = cv2.imdecode(
-        np.frombuffer(result.stdout, dtype=np.uint8),
-        cv2.IMREAD_COLOR,
-    )
+   screen = cv2.imdecode(
+      np.frombuffer(result.stdout, dtype=np.uint8),
+      cv2.IMREAD_COLOR,
+   )
 
-    if screen is None:
-        raise RuntimeError(
-            f"Could not decode screenshot. ADB stderr: {result.stderr.decode(errors='replace')}"
+   if screen is None:
+      raise RuntimeError(
+         f"Could not decode screenshot. ADB stderr: {result.stderr.decode(errors='replace')}"
         )
 
-    return cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+   return cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
 
 
 def match_template(template_name):
