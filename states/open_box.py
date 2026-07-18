@@ -1,5 +1,5 @@
 from opencv.template_match import match_template
-from adb.action import click_position
+from adb.action import click
 import time
 
 def open_box(bot, state_enum):
@@ -7,6 +7,6 @@ def open_box(bot, state_enum):
 
       for _ in range(2):
          time.sleep(1)
-         click_position((528,621), (742,655))
+         click((528,621), (742,655))
 
    return bot.update(state_enum.Idle)

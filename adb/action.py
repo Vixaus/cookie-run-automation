@@ -1,12 +1,21 @@
 import subprocess
 import random
+import time
 
+from dataclasses import dataclass
 from utils.adb_path import adb_path
 from .device import online_devices
 
 type vector = tuple[int, int]
 
-def click_position(tl: vector, br: vector):
+@dataclass
+class ClickAction:
+    tl: vector
+    br: vector
+    wait: int
+
+
+def click(tl: vector, br: vector):
 
     x = random.randint(tl[0], br[0])
     y = random.randint(tl[1], br[1])
@@ -24,3 +33,8 @@ def click_position(tl: vector, br: vector):
         ],
         check=True,
     )
+
+def click_sequence(cs: list[ClickAction]):
+    for action in cs:
+        click(action.tl, action.br)
+        time.sleep(action.wait)
