@@ -4,17 +4,25 @@ from utils.adb_path import adb_path
 
 online_devices = []
 
+def check_online_devices():
+    if not online_devices:
+       raise ValueError("No online devices found")
+    print(f"Online devices: {online_devices}")
+
 
 def get_online_devices():
     try:
         result = subprocess.run(
             [adb_path, "devices", "-l"], check=True, capture_output=True, text=True
         )
+
         for i in result.stdout.splitlines()[1:]:
             if not i.strip():
                 continue
             online_devices.append(i.split()[0])
-        print(f"Online devices: {online_devices}")
+
+        check_online_devices()
+
     except FileNotFoundError as e:
         print(f"Error: {e}")
     except subprocess.CalledProcessError as e:

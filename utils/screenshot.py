@@ -1,8 +1,8 @@
 import subprocess
+from utils.adb_path import adb_path
 from pathlib import Path
 
-adb_path = r"C:\LDPlayer\LDPlayer14\adb.exe"
-file_path = Path(r"templates\screen.png")
+file_path = Path(r"templates/screen.png")
 
 result = subprocess.run([adb_path, "exec-out", "screencap", "-p"], capture_output=True)
 

@@ -1,13 +1,12 @@
 from opencv.template_match import match_template
 from adb.action import click_position
-import time
+from utils.wait import wait
 
 def start_from_lobby(bot, state_enum):
-    time.sleep(1)
     if match_template("lobby") and bot.state == state_enum.StartFromLobby:
         print("starting from lobby")
         click_position((807, 619), (1112, 668))
-        time.sleep(2)
+        wait(1,2)
         return bot.update(state_enum.SelectBoost)
     else:
         print("lobby not found")
