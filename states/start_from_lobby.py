@@ -21,4 +21,4 @@ def start_from_lobby(bot, state_enum):
                 return bot.update(state)
         return bot.update(state_enum.StartFromBoost)
     else:
-        return False
+        return bot.update(state_enum.Idle)
