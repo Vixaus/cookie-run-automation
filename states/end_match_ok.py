@@ -8,4 +8,6 @@ def end_match_ok(bot, state_enum):
        wait(1,2)
        if match_template("open_box"):
            return bot.update(state_enum.OpenBox)
-    return bot.update(state_enum.Idle)
+       else:
+           return bot.update(state_enum.Idle)
+    return False

@@ -9,3 +9,4 @@ def cookie_relay(bot, state_enum):
         while not match_template("end_ok"):
             time.sleep(1)
         return bot.update(state_enum.MatchEnd)
+    return False

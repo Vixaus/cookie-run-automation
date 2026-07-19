@@ -49,8 +49,13 @@ def match_template(img):
 
     _, max_val, _, max_loc = cv2.minMaxLoc(result)
 
+    x, y = max_loc
+    h, w = templates[img].shape[:2]
+
+    center_matched_pos = (x + w // 2, y + h // 2)
+
     if max_val >= 0.9:
-        return True
+        return center_matched_pos
 
     return False
 
@@ -59,7 +64,6 @@ def match_color(rgb: color, positon: vector):
     ss, _ = capture_screen()
     b, g, r = ss[y, x]
 
-    print(f"color: {r}, {g}, {b}")
     if r == rgb[0] and g == rgb[1] and b == rgb[2]:
         return True
     return False

@@ -4,13 +4,14 @@ import time
 
 def idle(bot, state_enum):
     config = load_config()
-    get_relic = config.get("Get_Relic")
+    get_relic = config.get("Get_Relic", False)
 
-    time.sleep(2)
+    time.sleep(1)
 
     checks = [
-        ("news_popup", state_enum.CloseNewsPopup),
-        ("confirm_popup", state_enum.ConfirmPopup),
+        ("x_popup", state_enum.CloseXPopup),
+        ("confirm_reward", state_enum.ConfirmReward),
+        ("confirm_league", state_enum.ConfirmLeague),
         ("get_relic", state_enum.GetRelic),
         ("lobby", state_enum.StartFromLobby),
     ]
@@ -20,4 +21,4 @@ def idle(bot, state_enum):
             if (template_name == "get_relic" and get_relic) or (template_name != "get_relic") :
                 return bot.update(next_state)
 
-    print("lobby not found")
+    return False

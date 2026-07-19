@@ -3,7 +3,7 @@ import time
 from opencv.template_match import match_template, match_color
 from adb.action import click_sequence, ClickAction
 
-def select_boost(bot, state_enum):
+def buy_random_boost(bot, state_enum):
 
     actions: list[ClickAction] = [
         ClickAction(
@@ -23,15 +23,12 @@ def select_boost(bot, state_enum):
         ),
     ]
 
-    if match_template("boost") and bot.state == state_enum.SelectBoost:
-        print("buying multi boost")
+    if match_template("boost") and bot.state == state_enum.RandomBoost:
         click_sequence(actions)
 
-        print("waiting for power plus")
         while match_color((78, 77, 75), (140, 330)):
            time.sleep(1)
 
-        print("power plus found")
         return bot.update(state_enum.StartFromBoost)
     else:
-        print("boost screen not found")
+        return False

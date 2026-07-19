@@ -6,7 +6,7 @@ def get_relic(bot, state_enum):
         ClickAction(
             tl=(508, 110),
             br=(561, 117),
-            wait=1,
+            wait=1.5,
         ),
         ClickAction(
             tl=(544, 563),
@@ -16,12 +16,12 @@ def get_relic(bot, state_enum):
         ClickAction(
             tl=(522, 542),
             br=(737, 590),
-            wait=1,
+            wait=1.5,
         ),
         ClickAction(
             tl=(1062, 151),
             br=(1089, 165),
-            wait=1,
+            wait=1.5,
         ),
     ]
 
@@ -29,3 +29,4 @@ def get_relic(bot, state_enum):
         click_sequence(actions)
 
         return bot.update(state_enum.Idle)
+    return False

@@ -9,4 +9,6 @@ def match_color(positon: Tuple[int, int]):
 
     print(f"color: {r}, {g}, {b}")
 
-match_color((0,0))
+match_color((173,392))
+match_color((327,392))
+match_color((534, 392))

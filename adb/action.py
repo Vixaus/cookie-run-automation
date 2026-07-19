@@ -12,7 +12,7 @@ type vector = tuple[int, int]
 class ClickAction:
     tl: vector
     br: vector
-    wait: int
+    wait: float
 
 
 def click(tl: vector, br: vector):

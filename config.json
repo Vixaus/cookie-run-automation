@@ -1,4 +1,11 @@
 {
-"Cookie_Relay": true,
-"Get_Relic": true
+  "Selected_Boost": {
+    "Hp": true,
+    "Power": true,
+    "Xp": true
+  },
+  "Buy_Boost": true,
+  "Buy_Multi_Boost": true,
+  "Cookie_Relay": true,
+  "Get_Relic": true
 }
