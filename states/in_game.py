@@ -6,6 +6,7 @@ from utils.templates import MATCH_END, COOKIE_RELAY, IN_GAME
 
 def in_game(bot, state_enum):
 
+    time.sleep(5)
 
     if match_template(IN_GAME):
         config = load_config()
