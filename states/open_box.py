@@ -12,4 +12,4 @@ def open_box(bot, state_enum):
 
     if match_template(OPEN_BOX) and bot.state == state_enum.OpenBox:
         return False
-    return bot.update(state_enum.Idle)
+    return bot.update(state_enum.MatchEnd)
