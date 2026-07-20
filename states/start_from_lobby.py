@@ -1,7 +1,8 @@
 import time
-from opencv.template_match import match_template
+from vision.template_match import match_template
 from adb.action import click
-from utils.load_config import load_config
+from utils.config import load_config
+from utils.templates import LOBBY_TEMPLATE
 
 def start_from_lobby(bot, state_enum):
     config = load_config()
@@ -13,7 +14,7 @@ def start_from_lobby(bot, state_enum):
         (buy_multi_boost, state_enum.RandomBoost)
     ]
 
-    if match_template("lobby") and bot.state == state_enum.StartFromLobby:
+    if match_template(LOBBY_TEMPLATE) and bot.state == state_enum.StartFromLobby:
         click((807, 619), (1112, 668))
         time.sleep(2)
         for selected, state in next_boost:

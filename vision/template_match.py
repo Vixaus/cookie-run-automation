@@ -2,7 +2,6 @@ import subprocess
 from pathlib import Path
 
 import numpy as np
-
 import cv2
 
 from adb.device import online_devices
@@ -19,24 +18,34 @@ def load_templates():
         templates[file.stem] = cv2.imread(str(file), cv2.IMREAD_GRAYSCALE)
 
 
-def capture_screen():
+def capture_screen(tl: vector = (0, 0), br: vector = (1280, 720)):
    result = subprocess.run(
        [adb_path, "-s", f"{online_devices[0]}", "exec-out", "screencap", "-p"],
        capture_output=True,
        check=True,
     )
 
-   screen = cv2.imdecode(
+   raw = cv2.imdecode(
       np.frombuffer(result.stdout, dtype=np.uint8),
       cv2.IMREAD_COLOR,
    )
 
-   if screen is None:
+
+   x1 = tl[0]
+   y1 = tl[1]
+   x2 = br[0]
+   y2 = br[1]
+
+   roi = raw[y1:y2, x1:x2]
+
+   gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+
+   if roi is None:
       raise RuntimeError(
          f"Could not decode screenshot. ADB stderr: {result.stderr.decode(errors='replace')}"
         )
 
-   return screen, cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+   return roi, gray
 
 
 def match_template(img):

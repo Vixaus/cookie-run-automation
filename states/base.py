@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 
 from states.idle import idle
-from states.confirm_popup import confirm_reward, confirm_league
+from states.confirm_popup import confirm_popup
 from states.buy_random_boost import buy_random_boost
 from states.start_from_lobby import start_from_lobby
 from states.start_from_boost import start_from_boost
@@ -19,8 +19,7 @@ from states.buy_boost import buy_boost
 class state_enum(Enum):
     Idle = auto()
     CloseXPopup = auto()
-    ConfirmReward = auto()
-    ConfirmLeague = auto()
+    ConfirmPopup = auto()
     GetRelic = auto()
     StartFromLobby = auto()
     BuyBoost = auto()
@@ -35,8 +34,7 @@ class state_enum(Enum):
 handler = {
     state_enum.Idle: idle,
     state_enum.CloseXPopup: close_x_popup,
-    state_enum.ConfirmReward: confirm_reward,
-    state_enum.ConfirmLeague: confirm_league,
+    state_enum.ConfirmPopup: confirm_popup,
     state_enum.GetRelic: get_relic,
     state_enum.StartFromLobby: start_from_lobby,
     state_enum.BuyBoost: buy_boost,
@@ -61,4 +59,4 @@ class bot_state:
 
         while True:
             handler[self.state](self, state_enum)
-            time.sleep(0.8)
+            time.sleep(0.5)

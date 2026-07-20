@@ -1,5 +1,5 @@
 from typing import Tuple
-from opencv.template_match import capture_screen
+from vision.template_match import capture_screen
 
 
 def match_color(positon: Tuple[int, int]):
