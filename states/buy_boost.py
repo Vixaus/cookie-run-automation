@@ -39,4 +39,5 @@ def buy_boost(bot, state_enum):
         if multi_boost:
             return bot.update(state_enum.RandomBoost)
         return bot.update(state_enum.StartFromBoost)
-    return False
+
+    return bot.update(state_enum.StartFromLobby)

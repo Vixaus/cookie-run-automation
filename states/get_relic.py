@@ -29,5 +29,4 @@ def get_relic(bot, state_enum):
     if match_template(GET_RELIC) and bot.state == state_enum.GetRelic:
         click_sequence(actions)
 
-        return bot.update(state_enum.Idle)
-    return False
+    return bot.update(state_enum.Idle)

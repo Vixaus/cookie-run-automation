@@ -10,5 +10,5 @@ def confirm_popup(bot, state_enum):
 
     if matched_pos and bot.state == state_enum.ConfirmPopup:
         click((x - 10, y - 10), (x + 10, y + 10))
-        return bot.update(state_enum.Idle)
-    return False
+
+    return bot.update(state_enum.Idle)

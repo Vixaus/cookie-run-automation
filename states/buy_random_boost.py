@@ -3,8 +3,13 @@ import time
 from vision.template_match import match_template, match_color
 from adb.action import click_sequence, ClickAction
 from utils.templates import BOOST
+from utils.config import load_config
+
 
 def buy_random_boost(bot, state_enum):
+
+    config = load_config()
+    buy_boost = config.get('Buy_Boost', False)
 
     actions: list[ClickAction] = [
         ClickAction(
@@ -31,5 +36,7 @@ def buy_random_boost(bot, state_enum):
            time.sleep(1)
 
         return bot.update(state_enum.StartFromBoost)
+    elif buy_boost:
+        return bot.update(state_enum.BuyBoost)
     else:
-        return False
+        return bot.update(state_enum.StartFromLobby)

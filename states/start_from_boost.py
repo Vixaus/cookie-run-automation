@@ -8,4 +8,4 @@ def start_from_boost(bot, state_enum):
         click((794, 601), (1020, 629))
         return bot.update(state_enum.InGame)
     else:
-        return False
+        return bot.update(state_enum.StartFromLobby)

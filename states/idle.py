@@ -26,4 +26,4 @@ def idle(bot, state_enum):
 
     print("in this loop")
 
-    return False
+    return bot.update(state_enum.OpenBox)

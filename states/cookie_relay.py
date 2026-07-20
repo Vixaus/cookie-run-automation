@@ -10,4 +10,5 @@ def cookie_relay(bot, state_enum):
         while not match_template(MATCH_END):
             time.sleep(0.5)
         return bot.update(state_enum.MatchEnd)
-    return False
+
+    return bot.update(state_enum.InGame)
