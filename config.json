@@ -1,9 +1,13 @@
 {
+  "Auto_Jump": true,
+  "Auto_Jump_Delay": [0.1, 0.8],
+
   "Selected_Boost": {
     "Hp": true,
     "Power": true,
     "Xp": true
   },
+
   "Buy_Boost": true,
   "Buy_Multi_Boost": true,
   "Cookie_Relay": true,

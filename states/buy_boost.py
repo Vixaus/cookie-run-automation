@@ -2,8 +2,8 @@ import time
 
 from vision.template_match import match_color, match_template
 from adb.action import click
-from utils.config import load_config
-from utils.templates import BOOST
+from config.config import load_config
+from vision.templates import BOOST
 
 boost_type = {
     "Hp": (173,392),
@@ -23,7 +23,7 @@ def buy_boost(bot, state_enum):
     multi_boost = config.get("Buy_Multi_Boost", False)
     wl = config.get("Selected_Boost", {})
 
-    if match_template(BOOST) and bot.state == state_enum.BuyBoost:
+    if match_template(BOOST["img"], BOOST["tl"], BOOST["br"]) and bot.state == state_enum.BuyBoost:
         for boost in boost_type:
             boost_state = wl.get(boost, False)
             tl = (boost_type[boost][0] - 5, boost_type[boost][1] - 5)

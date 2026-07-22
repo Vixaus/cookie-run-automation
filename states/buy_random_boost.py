@@ -2,8 +2,8 @@ import time
 
 from vision.template_match import match_template, match_color
 from adb.action import click_sequence, ClickAction
-from utils.templates import BOOST
-from utils.config import load_config
+from vision.templates import BOOST
+from config.config import load_config
 
 
 def buy_random_boost(bot, state_enum):
@@ -29,7 +29,7 @@ def buy_random_boost(bot, state_enum):
         ),
     ]
 
-    if match_template(BOOST) and bot.state == state_enum.RandomBoost:
+    if match_template(BOOST["img"], BOOST["tl"], BOOST["br"]) and bot.state == state_enum.RandomBoost:
         click_sequence(actions)
 
         while match_color((78, 77, 75), (140, 330)):

@@ -1,6 +1,6 @@
 from vision.template_match import match_template
 from adb.action import click_sequence, ClickAction
-from utils.templates import GET_RELIC
+from vision.templates import GET_RELIC
 
 def get_relic(bot, state_enum):
     actions: list[ClickAction] = [
@@ -26,7 +26,7 @@ def get_relic(bot, state_enum):
         ),
     ]
 
-    if match_template(GET_RELIC) and bot.state == state_enum.GetRelic:
+    if match_template(GET_RELIC["img"], GET_RELIC["tl"], GET_RELIC["br"]) and bot.state == state_enum.GetRelic:
         click_sequence(actions)
 
     return bot.update(state_enum.Idle)

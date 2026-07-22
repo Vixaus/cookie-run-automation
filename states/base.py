@@ -9,7 +9,7 @@ from states.buy_random_boost import buy_random_boost
 from states.start_from_lobby import start_from_lobby
 from states.start_from_boost import start_from_boost
 from states.in_game import in_game
-from states.end_match_ok import end_match_ok
+from states.end_match import end_match_ok
 from states.open_box import open_box
 from states.close_x_popup import close_x_popup
 from states.get_relic import get_relic

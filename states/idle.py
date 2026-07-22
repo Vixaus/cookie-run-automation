@@ -1,7 +1,7 @@
 from vision.template_match import match_template
-from utils.config import load_config
+from config.config import load_config
 from vision.text_match import match_text
-from utils.templates import CLOSE_X_POPUP, GET_RELIC, LOBBY_TEMPLATE
+from vision.templates import X_POPUP, GET_RELIC, LOBBY
 import time
 
 def idle(bot, state_enum):
@@ -11,19 +11,17 @@ def idle(bot, state_enum):
     time.sleep(1)
 
     checks = [
-        (CLOSE_X_POPUP, state_enum.CloseXPopup),
+        (X_POPUP, state_enum.CloseXPopup),
         (GET_RELIC, state_enum.GetRelic),
-        (LOBBY_TEMPLATE, state_enum.StartFromLobby),
+        (LOBBY, state_enum.StartFromLobby),
     ]
 
-    if match_text(["confirm", "ok"], (390, 400), (870, 710)):
-        return bot.update(state_enum.ConfirmPopup)
+    if match_text(["confirm", "ok", "cancel"], (390, 400), (870, 710)):
+            return bot.update(state_enum.ConfirmPopup)
 
     for template_name, next_state in checks:
-        if match_template(template_name):
+        if match_template(template_name["img"], template_name["tl"], template_name["br"]):
             if (template_name == "get_relic" and get_relic) or (template_name != "get_relic") :
                 return bot.update(next_state)
-
-    print("in this loop")
 
     return bot.update(state_enum.OpenBox)

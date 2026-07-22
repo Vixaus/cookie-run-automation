@@ -1,6 +1,6 @@
 import subprocess
 
-from utils.adb_path import adb_path
+from config.adb_path import adb_path
 
 online_devices = []
 

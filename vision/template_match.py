@@ -5,7 +5,7 @@ import numpy as np
 import cv2
 
 from adb.device import online_devices
-from utils.adb_path import adb_path
+from config.adb_path import adb_path
 
 type color = tuple[int, int, int]
 type vector = tuple[int, int]
@@ -14,7 +14,7 @@ templates = {}
 
 
 def load_templates():
-    for file in Path("templates").glob(("*png")):
+    for file in Path("vision/templates").glob(("*png")):
         templates[file.stem] = cv2.imread(str(file), cv2.IMREAD_GRAYSCALE)
 
 
@@ -48,23 +48,30 @@ def capture_screen(tl: vector = (0, 0), br: vector = (1280, 720)):
    return roi, gray
 
 
-def match_template(img):
-    _, gray = capture_screen()
-    result = cv2.matchTemplate(
-        gray,
-        templates[img],
-        cv2.TM_CCOEFF_NORMED,
-    )
+def match_template(img, tl: vector = (0, 0), br: vector = (1280, 720)):
+    template = templates.get(img)
+    if template is None:
+        raise ValueError(f"Template not loaded: {img}")
 
-    _, max_val, _, max_loc = cv2.minMaxLoc(result)
+    _, base_gray = capture_screen(tl, br)
+    template_h, template_w = template.shape[:2]
 
-    x, y = max_loc
-    h, w = templates[img].shape[:2]
+    for scale in [1.0, 1.1, 1.2, 1.3, 1.4, 1.5]:
+        gray = cv2.resize(base_gray, None, fx=scale, fy=scale)
+        image_h, image_w = gray.shape[:2]
 
-    center_matched_pos = (x + w // 2, y + h // 2)
+        if image_h < template_h or image_w < template_w:
+            continue
 
-    if max_val >= 0.9:
-        return center_matched_pos
+        result = cv2.matchTemplate(gray, template, cv2.TM_CCOEFF_NORMED)
+        _, max_val, _, max_loc = cv2.minMaxLoc(result)
+
+        if max_val >= 0.85:
+            x, y = max_loc
+            return (
+                round((x + template_w // 2) / scale) + tl[0],
+                round((y + template_h // 2) / scale) + tl[1],
+            )
 
     return False
 

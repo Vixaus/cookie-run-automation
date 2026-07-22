@@ -3,7 +3,7 @@ import random
 import time
 
 from dataclasses import dataclass
-from utils.adb_path import adb_path
+from config.adb_path import adb_path
 from .device import online_devices
 
 type vector = tuple[int, int]
