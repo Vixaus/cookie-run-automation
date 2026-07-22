@@ -16,10 +16,9 @@ def in_game(bot, state_enum):
         cookie_relay = config.get("Cookie_Relay", False)
         auto_jump_enabled = config.get("Auto_Jump", False)
 
-        auto_jump_thread = None
+        auto_jump_thread = threading.Thread(target=auto_jump, daemon=True)
 
         if auto_jump_enabled:
-            auto_jump_thread = threading.Thread(target=auto_jump, daemon=True)
             auto_jump_thread.start()
 
 
@@ -31,7 +30,7 @@ def in_game(bot, state_enum):
             while not match_template(MATCH_END["img"], MATCH_END["tl"], MATCH_END["br"]):
                 time.sleep(0.5)
 
-            if auto_jump_thread is not None:
+            if auto_jump_enabled is not None:
                 auto_jump_thread.join()
 
             return bot.update(state_enum.MatchEnd)
