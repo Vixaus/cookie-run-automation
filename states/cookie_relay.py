@@ -7,10 +7,11 @@ from automation.auto_jump import auto_jump
 import threading
 
 def cookie_relay(bot, state_enum):
-    if match_template(COOKIE_RELAY["img"], COOKIE_RELAY.get("tl"), COOKIE_RELAY.get("br")) and bot.state == state_enum.CookieRelay:
+    if match_template(COOKIE_RELAY["img"], COOKIE_RELAY["tl"], COOKIE_RELAY["br"]) and bot.state == state_enum.CookieRelay:
+
+        click((591,285), (700,395))
 
         time.sleep(1)
-        click((591,285), (700,395))
 
         config = load_config()
         auto_jump_enabled = config.get("Auto_Jump", False)
@@ -22,7 +23,7 @@ def cookie_relay(bot, state_enum):
             stop_auto_jump.clear()
             auto_jump_thread.start()
 
-        while not match_template(MATCH_END["img"], MATCH_END.get("tl"), MATCH_END.get("br")):
+        while not match_template(MATCH_END["img"], MATCH_END["tl"], MATCH_END["br"]):
             time.sleep(0.5)
 
         if auto_jump_enabled:

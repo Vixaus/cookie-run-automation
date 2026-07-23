@@ -7,9 +7,11 @@
     "Power": true,
     "Xp": true
   },
-
   "Buy_Boost": true,
-  "Buy_Multi_Boost": true,
+
+  "Selected_Random_Boost": ["Double Coins"],
+  "Buy_Random_Boost": true,
+
   "Cookie_Relay": true,
   "Get_Relic": true
 }

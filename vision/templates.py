@@ -28,6 +28,11 @@ BOOST: TemplateType = {
     "tl": (110, 68),
     "br": (632, 149),
 }
+CHECK_BOX: TemplateType = {
+    "img": "check_box",
+    "tl": (251, 151),
+    "br": (1014, 446),
+}
 START_GAME: TemplateType = {
     "img": "play",
     "tl": (665, 550),

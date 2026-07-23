@@ -20,7 +20,7 @@ def check_boost(boost):
 
 def buy_boost(bot, state_enum):
     config = load_config()
-    multi_boost = config.get("Buy_Multi_Boost", False)
+    random_boost = config.get("Buy_Random_Boost", False)
     wl = config.get("Selected_Boost", {})
 
     if match_template(BOOST["img"], BOOST["tl"], BOOST["br"]) and bot.state == state_enum.BuyBoost:
@@ -36,7 +36,7 @@ def buy_boost(bot, state_enum):
 
             time.sleep(1)
 
-        if multi_boost:
+        if random_boost:
             return bot.update(state_enum.RandomBoost)
         return bot.update(state_enum.StartFromBoost)
 

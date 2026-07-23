@@ -16,7 +16,7 @@ def idle(bot, state_enum):
         (LOBBY, state_enum.StartFromLobby),
     ]
 
-    if match_text(["confirm", "ok", "cancel"], (390, 400), (870, 710)):
+    if match_text(["confirm", "ok", "cancel"], (300, 410), (940, 700)):
             return bot.update(state_enum.ConfirmPopup)
 
     for template_name, next_state in checks:
