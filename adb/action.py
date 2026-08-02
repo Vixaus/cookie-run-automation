@@ -1,21 +1,39 @@
-import subprocess
 import random
+import subprocess
 import time
-
 from dataclasses import dataclass
-from config.adb_path import adb_path
-from .device import online_devices
 
-type vector = tuple[int, int]
+from adb.adb_path import adb_path
+from custom_types.types import Vector
+
 
 @dataclass
 class ClickAction:
-    tl: vector
-    br: vector
+    tl: Vector
+    br: Vector
     wait: float
 
 
-def click(tl: vector, br: vector):
+def swipe(device_id: str, start: Vector, end: Vector, duration: int):
+    subprocess.run(
+        [
+            adb_path,
+            "-s",
+            device_id,
+            "shell",
+            "input",
+            "swipe",
+            str(start[0]),
+            str(start[1]),
+            str(end[0]),
+            str(end[1]),
+            str(duration),
+        ],
+        check=True,
+    )
+
+
+def click(device_id: str, tl: Vector, br: Vector):
 
     x = random.randint(tl[0], br[0])
     y = random.randint(tl[1], br[1])
@@ -24,7 +42,7 @@ def click(tl: vector, br: vector):
         [
             adb_path,
             "-s",
-            online_devices[0],
+            device_id,
             "shell",
             "input",
             "tap",
@@ -34,7 +52,8 @@ def click(tl: vector, br: vector):
         check=True,
     )
 
-def click_sequence(cs: list[ClickAction]):
+
+def click_sequence(device_id: str, cs: list[ClickAction]):
     for action in cs:
-        click(action.tl, action.br)
+        click(device_id, action.tl, action.br)
         time.sleep(action.wait)

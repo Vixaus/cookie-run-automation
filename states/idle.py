@@ -1,14 +1,33 @@
-from vision.template_match import match_template
-from config.config import load_config
-from vision.text_match import match_text
-from vision.templates import X_POPUP, GET_RELIC, LOBBY
-import time
+from vision.get_text import get_text
+from vision.match_template import match_template
+from vision.match_text import match_text
+from vision.templates import GET_RELIC, LOBBY, X_POPUP
 
-def idle(bot, state_enum):
-    config = load_config()
+
+def check_relic(template_name, get_relic):
+    return (template_name["img"] == "get_relic" and get_relic) or (
+        template_name["img"] != "get_relic"
+    )
+
+
+def send_lives(device_id, config):
+    send_lives = config.get("Send_Lives", False)
+    send_lives_at = config.get("Send_Lives_At", 0)
+
+    if send_lives:
+        mail_noti = (get_text(device_id, (695, 645), (731, 663), True))[0]
+
+        if int(mail_noti) >= send_lives_at:
+            print(
+                f"{device_id}: Mail is at {int(mail_noti)} your config is {send_lives_at}, start sending lives..."
+            )
+            return True
+
+    return False
+
+
+def auto_run(device_id, bot, state_enum, config):
     get_relic = config.get("Get_Relic", False)
-
-    time.sleep(1)
 
     checks = [
         (X_POPUP, state_enum.CloseXPopup),
@@ -16,12 +35,31 @@ def idle(bot, state_enum):
         (LOBBY, state_enum.StartFromLobby),
     ]
 
-    if match_text(["confirm", "ok", "cancel"], (300, 410), (940, 700)):
-            return bot.update(state_enum.ConfirmPopup)
-
     for template_name, next_state in checks:
-        if match_template(template_name["img"], template_name["tl"], template_name["br"]):
-            if (template_name == "get_relic" and get_relic) or (template_name != "get_relic") :
-                return bot.update(next_state)
+        if match_template(device_id, template_name) and check_relic(
+            template_name, get_relic
+        ):
+            if template_name["img"] == "lobby" and send_lives(device_id, config):
+                return bot.update(device_id, state_enum.SendLives)
 
-    return bot.update(state_enum.OpenBox)
+            return bot.update(device_id, next_state)
+
+    return bot.update(device_id, state_enum.OpenBox)
+
+
+def auto_treasure(device_id, bot, state_enum, _):
+    return bot.update(device_id, state_enum.AutoTreasure)
+
+
+mode = {"Auto_Run": auto_run, "Auto_Treasure": auto_treasure}
+
+
+def idle(device_id, bot, state_enum, config):
+    selected_mode = config.get("Mode", "Auto_Run")
+
+    if match_text(
+        device_id, ["confirm", "conficm", "ok", "cancel"], (300, 410), (940, 700)
+    ):
+        return bot.update(device_id, state_enum.ConfirmPopup)
+
+    mode[selected_mode](device_id, bot, state_enum, config)

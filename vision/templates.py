@@ -1,11 +1,12 @@
 from typing import TypedDict
 
-vector = tuple[int, int]
+from custom_types.types import Vector
+
 
 class TemplateType(TypedDict):
     img: str
-    tl: vector
-    br: vector
+    tl: Vector
+    br: Vector
 
 
 LOBBY: TemplateType = {
@@ -20,8 +21,8 @@ X_POPUP: TemplateType = {
 }
 GET_RELIC: TemplateType = {
     "img": "get_relic",
-    "tl": (450, 75),
-    "br": (590, 145),
+    "tl": (479, 61),
+    "br": (579, 108),
 }
 BOOST: TemplateType = {
     "img": "boost",
@@ -43,6 +44,11 @@ IN_GAME: TemplateType = {
     "tl": (1160, 0),
     "br": (1238, 72),
 }
+FAST_START: TemplateType = {
+    "img": "fast_start",
+    "tl": (565, 257),
+    "br": (744, 428),
+}
 COOKIE_RELAY: TemplateType = {
     "img": "cookie_relay",
     "tl": (565, 257),
@@ -57,4 +63,29 @@ OPEN_BOX: TemplateType = {
     "img": "open_box",
     "tl": (474, 586),
     "br": (793, 699),
+}
+TREASURE: TemplateType = {
+    "img": "treasure",
+    "tl": (193, 293),
+    "br": (384, 364),
+}
+DISCONNECT: TemplateType = {
+    "img": "disconnect",
+    "tl": (281, 152),
+    "br": (1000, 568),
+}
+SEND_LIVES: TemplateType = {
+    "img": "send_lives",
+    "tl": (131, 229),
+    "br": (1153, 490),
+}
+CLAIM_LIVES: TemplateType = {
+    "img": "claim_lives",
+    "tl": (131, 229),
+    "br": (1153, 490),
+}
+CHOC_COOKIE: TemplateType = {
+    "img": "choc_cookie",
+    "tl": (0, 0),
+    "br": (0, 0),
 }

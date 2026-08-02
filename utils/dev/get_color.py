@@ -1,14 +1,14 @@
-from typing import Tuple
-from vision.template_match import capture_screen
+from vision.match_template import capture_screen
+
+device_id = "emulator-5554"
 
 
-def match_color(positon: Tuple[int, int]):
+def get_color(positon: tuple[int, int]):
     x, y = positon
-    ss, _ = capture_screen()
+    ss, _ = capture_screen(device_id)
     b, g, r = ss[y, x]
 
     print(f"color: {r}, {g}, {b}")
 
-match_color((173,392))
-match_color((327,392))
-match_color((534, 392))
+
+get_color((150, 200))
