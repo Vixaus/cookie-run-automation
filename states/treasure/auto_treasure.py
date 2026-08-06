@@ -101,13 +101,9 @@ def swipe_up(device_id):
 def check_choco_cookie(device_id, tl: Vector, br: Vector, config):
 
     keep_choc_cookie = config.get("Keep_Choc_Cookie", False)
-    choco_cookie_found = match_template(
-        device_id, {"img": CHOC_COOKIE["img"], "tl": tl, "br": br}
-    )
 
-    print(
-        f"Choco cookie found: {choco_cookie_found}, keep_choc_cookie: {keep_choc_cookie}"
-    )
+    if not keep_choc_cookie:
+        return False
 
     return (
         match_template(device_id, {"img": CHOC_COOKIE["img"], "tl": tl, "br": br})
