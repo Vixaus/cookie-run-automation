@@ -9,7 +9,7 @@ from vision.templates import START_GAME
 
 def update_coin(device_id, bot):
     coin = get_coins(device_id)
-    bot.update_coin(coin)
+    bot.update_coin(device_id, coin)
 
 
 def start_from_boost(device_id, bot, state_enum, config):

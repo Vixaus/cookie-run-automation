@@ -8,9 +8,6 @@ def match_text(device_Id: str, arg: list, tl=(0, 0), br=(1280, 720)):
     reader = get_reader()
     result = reader.readtext(gray)
 
-    if not result:
-        return False
-
     for i, _ in enumerate(result):
         box, text, _ = result[i]
         clean_text = text.lower().replace("~", "-")
@@ -23,4 +20,5 @@ def match_text(device_Id: str, arg: list, tl=(0, 0), br=(1280, 720)):
             screen_center_y = tl[1] + center_y
 
             return screen_center_x, screen_center_y, clean_text
-    return False
+
+    return 0, 0, ""

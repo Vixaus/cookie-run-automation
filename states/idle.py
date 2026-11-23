@@ -57,9 +57,11 @@ mode = {"Auto_Run": auto_run, "Auto_Treasure": auto_treasure}
 def idle(device_id, bot, state_enum, config):
     selected_mode = config.get("Mode", "Auto_Run")
 
-    if match_text(
+    _, _, text = match_text(
         device_id, ["confirm", "conficm", "ok", "cancel"], (300, 410), (940, 700)
-    ):
+    )
+
+    if text:
         return bot.update(device_id, state_enum.ConfirmPopup)
 
     mode[selected_mode](device_id, bot, state_enum, config)

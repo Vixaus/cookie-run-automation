@@ -96,6 +96,13 @@ def buy_random_boost(device_id, bot, state_enum, config):
             click(device_id, (571, 576), (700, 599))
 
             while match_color(device_id, (78, 77, 75), (140, 330)):
+                x, y, text = match_text(
+                    device_id, ["confirm", "conficm"], (390, 410), (940, 700)
+                )
+
+                if text:
+                    click(device_id, (x - 10, y - 10), (x + 10, y + 10))
+
                 time.sleep(1)
 
         return bot.update(device_id, state_enum.StartFromBoost)

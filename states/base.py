@@ -2,6 +2,7 @@ import time
 from dataclasses import dataclass
 from enum import Enum, auto
 
+from automation.bridge import emit
 from states.idle import idle
 from states.popup.close_x_popup import close_x_popup
 from states.popup.confirm_popup import confirm_popup
@@ -59,14 +60,15 @@ class bot_state:
     coin_count: int = 0
 
     def update(self, device_id, state):
-        print(f"{device_id}: {state}")
+        emit("state", device=device_id, state=state.name)
         self.state = state
 
-    def update_coin(self, coin):
+    def update_coin(self, device_id, coin):
+        emit("coins", device=device_id, coins=coin)
         self.coin_count = coin
 
-    def run(self, device_id, config):
+    def run(self, device_id, config, stop_event):
 
-        while True:
+        while not stop_event.is_set():
             handler[self.state](device_id, self, StateEnum, config)
             time.sleep(0.25)
