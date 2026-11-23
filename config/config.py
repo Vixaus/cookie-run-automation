@@ -24,9 +24,14 @@ default_config = {
 file_path = Path(__file__).parent / "devices_config"
 
 
+def config_file(device_id: str) -> Path:
+    """Windows forbids ':' in file names, so '127.0.0.1:16384' -> '127.0.0.1_16384.json'."""
+    return file_path / f"{device_id.replace(':', '_')}.json"
+
+
 def load_config(device_id):
     try:
-        with open(f"{file_path}/{device_id}.json", encoding="utf-8") as f:
+        with open(config_file(device_id), encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         print(f"{device_id}: No config file found.")
@@ -35,7 +40,7 @@ def load_config(device_id):
 
 def create_config(device_id):
     try:
-        with open(f"{file_path}/{device_id}.json", "w", encoding="utf-8") as f:
+        with open(config_file(device_id), "w", encoding="utf-8") as f:
             json.dump(default_config, f, indent=4)
             return default_config
     except FileNotFoundError:

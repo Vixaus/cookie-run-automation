@@ -2,7 +2,7 @@ import time
 
 from adb.action import ClickAction, click, click_sequence
 from vision.get_text import get_text
-from vision.match_template import match_color, match_template
+from vision.match_template import match_template
 from vision.match_text import match_text
 from vision.templates import BOOST, CHECK_BOX
 
@@ -95,7 +95,7 @@ def buy_random_boost(device_id, bot, state_enum, config):
 
             click(device_id, (571, 576), (700, 599))
 
-            while match_color(device_id, (78, 77, 75), (140, 330)):
+            while get_text(device_id, (720, 520), (1070, 560))[0].lower() not in selected_random_boost:
                 time.sleep(1)
 
         return bot.update(device_id, state_enum.StartFromBoost)

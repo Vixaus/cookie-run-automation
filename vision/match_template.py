@@ -22,13 +22,24 @@ def capture_screen(device_Id: str, tl: Vector = (0, 0), br: Vector = (1280, 720)
     result = subprocess.run(
         [adb_path, "-s", f"{device_Id}", "exec-out", "screencap", "-p"],
         capture_output=True,
-        check=True,
+        timeout=10,
     )
+
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"{device_Id}: screencap failed (exit {result.returncode}). "
+            f"ADB stderr: {result.stderr.decode(errors='replace').strip()}"
+        )
 
     raw = cv2.imdecode(
         np.frombuffer(result.stdout, dtype=np.uint8),
         cv2.IMREAD_COLOR,
     )
+
+    if raw is None:
+        raise RuntimeError(
+            f"{device_Id}: Could not decode screenshot. ADB stderr: {result.stderr.decode(errors='replace')}"
+        )
 
     x1 = tl[0]
     y1 = tl[1]
@@ -38,11 +49,6 @@ def capture_screen(device_Id: str, tl: Vector = (0, 0), br: Vector = (1280, 720)
     roi = raw[y1:y2, x1:x2]
 
     gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-
-    if roi is None:
-        raise RuntimeError(
-            f"Could not decode screenshot. ADB stderr: {result.stderr.decode(errors='replace')}"
-        )
 
     return roi, gray
 
