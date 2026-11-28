@@ -28,7 +28,7 @@ some-folder/
 
 ```
 git clone https://github.com/Vixaus/crumble.git
-git clone -b bridge https://github.com/Vixaus/cookie-run-automation.git automation
+git clone -b bridge https://github.com/Vixaus/crumble-script.git automation
 ```
 
 don't forget the `-b bridge`. without it you get `main`, and the app can't talk to that one.
@@ -97,7 +97,7 @@ you'll see the JSON lines in the terminal. type `stop` and press enter to end it
 
 ## Settings and how it works
 
-the settings and the bot's steps are the same as on main, so check the [main branch README](https://github.com/Vixaus/cookie-run-automation/tree/main#settings) for the full settings table and the "how it works" part.
+the settings and the bot's steps are the same as on main, so check the [main branch README](https://github.com/Vixaus/crumble-script/tree/main#settings) for the full settings table and the "how it works" part.
 
 ## Disclaimer
 
