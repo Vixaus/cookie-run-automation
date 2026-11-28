@@ -1,6 +1,4 @@
 __pycache__/
 .ruff_cache/
 config/**/*.json
-.agents/
-AGENTS.md
 debug.py
