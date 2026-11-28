@@ -62,39 +62,39 @@ def in_game(device_id, bot, state_enum, config):
         )
 
         if fast_start:
-            while not match_template(device_id, FAST_START):
+            # ~10-20 s, then play without it: no Fast Start item left, or a popup covers it.
+            for _ in range(50):
+                if match_template(device_id, FAST_START):
+                    click(device_id, FAST_START["tl"], FAST_START["br"])
+                    print(f"{device_id}: Clicked fast start")
+                    break
                 time.sleep(0.1)
-
-            click(device_id, FAST_START["tl"], FAST_START["br"])
-            print(f"{device_id}: Clicked fast start")
 
         if auto_jump_enabled:
             wait(1, 3)
             stop_auto_jump.clear()
             auto_jump_thread.start()
 
-        if cookie_relay:
-            while not match_template(device_id, COOKIE_RELAY):
-                if quit_match(device_id, config) or exceed_timeout(device_id):
-                    break
-                time.sleep(0.25)
+        try:
+            if cookie_relay:
+                while not match_template(device_id, COOKIE_RELAY):
+                    if quit_match(device_id, config) or exceed_timeout(device_id):
+                        break
+                    time.sleep(0.25)
 
-            if auto_jump_enabled:
-                stop_auto_jump.set()
+                return bot.update(device_id, state_enum.CookieRelay)
+
+            else:
+                while not match_template(device_id, MATCH_END):
+                    if quit_match(device_id, config) or exceed_timeout(device_id):
+                        break
+                    time.sleep(0.25)
+
+                return bot.update(device_id, state_enum.MatchEnd)
+        finally:
+            # Also on an error: auto-jump must not keep tapping after the run.
+            stop_auto_jump.set()
+            if auto_jump_thread.is_alive():
                 auto_jump_thread.join()
-
-            return bot.update(device_id, state_enum.CookieRelay)
-
-        else:
-            while not match_template(device_id, MATCH_END):
-                if quit_match(device_id, config) or exceed_timeout(device_id):
-                    break
-                time.sleep(0.25)
-
-            if auto_jump_enabled:
-                stop_auto_jump.set()
-                auto_jump_thread.join()
-
-            return bot.update(device_id, state_enum.MatchEnd)
     else:
         return bot.update(device_id, state_enum.StartFromBoost)

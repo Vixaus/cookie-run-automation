@@ -33,9 +33,15 @@ def set_config_dir(path):
     config_dir = Path(path)
 
 
+def config_file(device_id):
+    """Network devices like 127.0.0.1:16384 (MuMu) have a ':', which Windows file
+    names can't contain. Same rule as config_path in the app's lib.rs."""
+    return config_dir / f"{device_id.replace(':', '_')}.json"
+
+
 def load_config(device_id):
     try:
-        with open(config_dir / f"{device_id}.json", encoding="utf-8") as f:
+        with open(config_file(device_id), encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         emit("log", device=device_id, msg="No config file found.")
@@ -44,7 +50,7 @@ def load_config(device_id):
 
 def create_config(device_id):
     config_dir.mkdir(parents=True, exist_ok=True)
-    with open(config_dir / f"{device_id}.json", "w", encoding="utf-8") as f:
+    with open(config_file(device_id), "w", encoding="utf-8") as f:
         json.dump(default_config, f, indent=4)
     emit("log", device=device_id, msg="Created new config.")
     return dict(default_config)

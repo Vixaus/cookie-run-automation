@@ -30,6 +30,7 @@ def swipe(device_id: str, start: Vector, end: Vector, duration: int):
             str(duration),
         ],
         check=True,
+        stdin=subprocess.DEVNULL,  # see capture_screen in vision/match_template.py
     )
 
 
@@ -50,6 +51,7 @@ def click(device_id: str, tl: Vector, br: Vector):
             str(y),
         ],
         check=True,
+        stdin=subprocess.DEVNULL,  # see capture_screen in vision/match_template.py
     )
 
 

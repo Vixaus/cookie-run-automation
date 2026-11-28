@@ -54,6 +54,9 @@ handler = {
 }
 
 
+MAX_FAILS = 5  # errors in a row before giving up: the emulator is probably gone
+
+
 @dataclass
 class bot_state:
     state: StateEnum = StateEnum.Idle
@@ -68,7 +71,25 @@ class bot_state:
         self.coin_count = coin
 
     def run(self, device_id, config, stop_event):
-
+        # A bad OCR read or an adb hiccup must not end this device's bot for good.
+        fails = 0
         while not stop_event.is_set():
-            handler[self.state](device_id, self, StateEnum, config)
+            try:
+                handler[self.state](device_id, self, StateEnum, config)
+                fails = 0
+            except Exception as e:  # noqa: BLE001 - any error: log it, go on from Idle
+                fails += 1
+                emit(
+                    "error",
+                    device=device_id,
+                    msg=f"{self.state.name}: {type(e).__name__}: {e}",
+                )
+                if fails >= MAX_FAILS:
+                    emit(
+                        "error",
+                        device=device_id,
+                        msg=f"Stopped {device_id} after {MAX_FAILS} errors in a row",
+                    )
+                    return
+                self.update(device_id, StateEnum.Idle)  # Idle works out the screen
             time.sleep(0.25)

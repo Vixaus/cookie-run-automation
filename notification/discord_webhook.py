@@ -5,8 +5,6 @@ from typing import TypedDict
 
 import requests
 
-from states.run.in_game import start_game
-
 
 class AutoRunWebhook(TypedDict):
     device_id: str
@@ -68,14 +66,16 @@ def handle_webhook(device_id, url, local_message):
     try:
         response = requests.post(url, json=local_message, timeout=10)
         response.raise_for_status()
-
-        if start_game.get(device_id):
-            start_game.pop(device_id)
-
         print(f"{device_id}: Webhook sent successfully")
 
     except requests.RequestException as error:
-        print(f"{device_id}: Failed to send webhook ( {error} )")
+        # Not str(error): requests puts the webhook URL, token included, in it.
+        why = (
+            error.response.status_code
+            if error.response is not None
+            else type(error).__name__
+        )
+        print(f"{device_id}: Failed to send webhook ({why})")
 
 
 def relic_typo_fix(reward):

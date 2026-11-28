@@ -14,8 +14,11 @@ templates = {}
 
 
 def load_templates():
-    for file in Path("vision/templates").rglob("*.png"):
-        templates[file.stem] = cv2.imread(str(file), cv2.IMREAD_GRAYSCALE)
+    for file in (Path(__file__).parent / "templates").rglob("*.png"):
+        # imdecode, not imread: imread can't open non-ASCII paths on Windows.
+        templates[file.stem] = cv2.imdecode(
+            np.fromfile(file, dtype=np.uint8), cv2.IMREAD_GRAYSCALE
+        )
 
 
 def capture_screen(device_Id: str, tl: Vector = (0, 0), br: Vector = (1280, 720)):
@@ -23,6 +26,10 @@ def capture_screen(device_Id: str, tl: Vector = (0, 0), br: Vector = (1280, 720)
         [adb_path, "-s", f"{device_Id}", "exec-out", "screencap", "-p"],
         capture_output=True,
         check=True,
+        # Never hand adb our stdin. main.py's main thread sits reading stdin for
+        # "stop", and on Windows a new process can't inherit a pipe while another
+        # thread is reading it: adb would hang until "stop" arrives.
+        stdin=subprocess.DEVNULL,
     )
 
     raw = cv2.imdecode(
@@ -52,7 +59,7 @@ def match_template(device_Id: str, param: TemplateType):
     template = templates.get(param["img"])
 
     if template is None:
-        raise ValueError(f"Template not loaded: {template}")
+        raise ValueError(f"Template not loaded: {param['img']}")
 
     _, base_gray = capture_screen(device_Id, param["tl"], param["br"])
     template_h, template_w = template.shape[:2]

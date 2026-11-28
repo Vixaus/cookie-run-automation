@@ -1,4 +1,5 @@
 import argparse
+import os
 import sys
 import threading
 import time
@@ -12,14 +13,66 @@ from config.config import (
 )
 
 STOP_TIMEOUT = 10  # seconds to wait for all bot threads after "stop"
+STOP_POLL = 0.2  # seconds between checks of the stdin pipe
+
+
+def _stdin_pipe():
+    """stdin's Windows handle if it is a pipe (started by the app), else None."""
+    import _winapi
+    import msvcrt
+
+    handle = msvcrt.get_osfhandle(sys.stdin.fileno())
+    try:
+        _winapi.PeekNamedPipe(handle, 0)
+    except BrokenPipeError:
+        return handle  # already closed: the poll loop stops at once
+    except OSError:
+        return None  # a console: someone types "stop"
+    return handle
+
+
+def _poll_pipe_for_stop(handle):
+    import _winapi
+
+    buffer = b""
+    while True:
+        try:
+            available = _winapi.PeekNamedPipe(handle, 0)[0]
+        except OSError:  # the app closed our stdin: it quit or crashed
+            return
+        if not available:
+            time.sleep(STOP_POLL)
+            continue
+        buffer += os.read(sys.stdin.fileno(), available)
+        *lines, buffer = buffer.split(b"\n")
+        if any(line.strip() == b"stop" for line in lines):
+            return
+
+
+def wait_for_stop():
+    """Return when "stop" arrives on stdin, or stdin closes.
+
+    On Windows, a thread blocked reading a stdin pipe freezes the other threads
+    whenever they load a DLL that has its own C runtime (numpy, cv2, torch): the
+    loader checks the standard handles and waits for that read to finish. The
+    bots would hang on `import numpy` until "stop" arrived. So we never leave a
+    read waiting there: peek at the pipe, and read only what's already in it.
+    """
+    if sys.platform == "win32":
+        handle = _stdin_pipe()
+        if handle is not None:
+            _poll_pipe_for_stop(handle)
+            return
+
+    for line in sys.stdin:  # blocks until a line arrives; ends when stdin closes
+        if line.strip() == "stop":
+            return
 
 
 def get_config(device_id):
-    """Load device config; create a fresh one if missing or outdated."""
+    """Load device config; keys added since it was saved get their defaults."""
     config = load_config(device_id)
-    if not config or not set(default_config).issubset(set(config)):
-        config = create_config(device_id)
-    return config
+    return {**default_config, **config} if config else create_config(device_id)
 
 
 def start_bot(device_id, config, stop_event):
@@ -50,9 +103,7 @@ def run_bots(device_ids):
 
     emit("started", devices=device_ids)
 
-    for line in sys.stdin:  # blocks until a line arrives; ends when stdin closes
-        if line.strip() == "stop":
-            break
+    wait_for_stop()
 
     emit("stopping")
     stop_event.set()
@@ -78,9 +129,12 @@ def main():
         return
 
     if args.list_devices:
-        from adb.device import get_online_devices
+        from adb.device import AdbError, get_online_devices
 
-        emit("devices", devices=get_online_devices())
+        try:
+            emit("devices", devices=get_online_devices())
+        except AdbError as e:
+            sys.exit(str(e))  # one line on stderr: the app shows it as the error
         return
 
     device_ids = [d for d in args.devices.split(",") if d]

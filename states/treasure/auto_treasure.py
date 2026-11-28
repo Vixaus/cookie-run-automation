@@ -131,9 +131,11 @@ def auto_treasure(device_id, bot, state_enum, config):
     time.sleep(1)
 
     raw_inv = (get_text(device_id, (934, 81), (1069, 112)) or ["0/0"])[0]
-    current_inv = int(raw_inv.split("/")[0])
-    max_inv = int(raw_inv.split("/")[1])
-    space_left = int(max_inv) - int(current_inv)
+    # A misread here sets how many 5,000-coin draws to make: check it, cap by coins.
+    current_inv, _, max_inv = raw_inv.replace(" ", "").partition("/")
+    if not (current_inv.isdigit() and max_inv.isdigit()):
+        raise ValueError(f"Couldn't read the treasure inventory: {raw_inv!r}")
+    space_left = min(int(max_inv) - int(current_inv), coin_count // 5000)
 
     print(f"{device_id}: Data found, drawing treasure now")
     click(device_id, (1118, 88), (1138, 108))
